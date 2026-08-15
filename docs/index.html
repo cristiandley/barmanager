@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BarManager</title>
+<meta name="description" content="Hide and group your macOS menu bar icons.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1d1d1f;
+    --muted: #86868b;
+    --bar: #2a2a2e;
+    --code-bg: #f5f5f7;
+    --accent: #0a84ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b0b0c;
+      --fg: #f5f5f7;
+      --muted: #86868b;
+      --bar: #1f1f23;
+      --code-bg: #1a1a1d;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 12vh 24px 8vh;
+  }
+  main { max-width: 560px; width: 100%; }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+  .tagline { color: var(--muted); margin-top: 4px; }
+
+  .demo {
+    margin: 48px 0 10px;
+    background: var(--bar);
+    border-radius: 10px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    overflow: hidden;
+    user-select: none;
+  }
+  .hidden-zone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 200px;
+    overflow: hidden;
+    transition: max-width 0.45s ease, opacity 0.35s ease;
+    background: rgba(10, 132, 255, 0.22);
+    border-radius: 7px;
+    padding: 4px 8px;
+    opacity: 1;
+  }
+  .collapsed .hidden-zone { max-width: 0; opacity: 0; padding: 4px 0; }
+  .visible-zone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.10);
+    border-radius: 7px;
+    padding: 4px 8px;
+  }
+  .dot { width: 15px; height: 15px; border-radius: 50%; }
+  .sep { color: rgba(255, 255, 255, 0.5); font-size: 15px; }
+  .chevron {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    color: #fff;
+    background: var(--accent);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 2px;
+  }
+  .collapsed .chevron { background: rgba(255, 255, 255, 0.15); }
+  .clock { color: #eee; font-size: 14px; }
+  .hint { color: var(--muted); font-size: 0.85rem; text-align: right; }
+
+  h2 { font-size: 1rem; margin-top: 48px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+  pre {
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 12px;
+    overflow-x: auto;
+    font: 0.9rem/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  ul { margin-top: 12px; padding-left: 20px; }
+  li { margin-top: 6px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  footer { margin-top: 64px; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>BarManager</h1>
+  <p class="tagline">Hide and group your macOS menu bar icons.</p>
+
+  <div class="demo" id="demo">
+    <div class="hidden-zone">
+      <span class="dot" style="background:#ff9f0a"></span>
+      <span class="dot" style="background:#30d158"></span>
+      <span class="dot" style="background:#bf5af2"></span>
+    </div>
+    <span class="sep">|</span>
+    <div class="visible-zone">
+      <span class="dot" style="background:#64d2ff"></span>
+      <span class="dot" style="background:#ff375f"></span>
+    </div>
+    <button class="chevron" id="chev" aria-label="Collapse or expand">&rsaquo;</button>
+    <span class="clock">9:41</span>
+  </div>
+  <p class="hint">Click the chevron.</p>
+
+  <h2>Install</h2>
+  <pre>brew install cristiandley/tap/barmanager</pre>
+
+  <h2>Features</h2>
+  <ul>
+    <li>One click hides the icons that you select.</li>
+    <li>Groups: visible, hidden, and always hidden.</li>
+    <li>Colored backgrounds show each group.</li>
+    <li>CLI control: <code>BarManager toggle</code>.</li>
+    <li>No dependencies. Swift and AppKit only.</li>
+  </ul>
+
+  <footer>
+    <a href="https://github.com/cristiandley/barmanager">Source on GitHub</a>
+    &middot; made by cristiandley
+  </footer>
+</main>
+<script>
+  const demo = document.getElementById("demo");
+  const chev = document.getElementById("chev");
+  chev.addEventListener("click", () => {
+    demo.classList.toggle("collapsed");
+    chev.innerHTML = demo.classList.contains("collapsed") ? "&lsaquo;" : "&rsaquo;";
+  });
+</script>
+</body>
+</html>
