@@ -13,8 +13,6 @@ cask "barmanager" do
   desc "Menu bar icon organizer with collapsible groups"
   homepage "https://github.com/cristiandley/barmanager"
 
-  depends_on macos: ">= :ventura"
-
   app "BarManager.app"
 
   zap trash: [
