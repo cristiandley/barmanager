@@ -1,108 +1,118 @@
 # BarManager
 
-App de barra de menús para macOS que colapsa y **agrupa** los iconos de estado
-(estilo Hidden Bar / Ice), escrita en Swift puro con AppKit, sin dependencias.
+BarManager is a menu bar utility for macOS. It hides and groups the status
+icons in the menu bar, in the style of Hidden Bar and Ice. It is written in
+Swift with AppKit. It has no dependencies.
 
-## Grupos
+## Groups
 
-La barra queda dividida en tres zonas por dos separadores propios:
+Two separators divide the menu bar into three zones:
 
 ```
-┄  [siempre ocultos]  ┊  [ocultos]  |  [visibles]  ‹  🕐
+┄  [always hidden]  ┊  [hidden]  |  [visible]  ‹  🕐
 ```
 
-- **Visibles** — a la derecha del separador sólido `|`. Siempre se ven.
-- **Ocultos** — entre los dos separadores. Se ocultan al colapsar (clic en el chevron).
-- **Siempre ocultos** — a la izquierda del separador discontinuo `┊`. Solo
-  aparecen con ⌥ clic (o "Mostrar todo" en el menú).
+- **Visible**: the icons on the right side of the solid separator `|`. These
+  icons always show.
+- **Hidden**: the icons between the two separators. These icons hide when you
+  collapse the bar.
+- **Always hidden**: the icons on the left side of the dotted separator `┊`.
+  These icons show only in the "show all" mode.
 
-Para mover un icono de un grupo a otro: **⌘ + arrastrar** el icono al otro lado
-del separador (es la función nativa de macOS para reordenar la barra).
+To move an icon to a different group, hold the Command key and drag the icon
+to the other side of a separator. This drag function is a standard macOS
+feature.
 
-## Uso
+## Operation
 
-El icono del chevron indica el estado:
+The chevron icon shows the state:
 
-| Icono | Estado | Acción al hacer clic |
+| Icon | State | Click action |
 |---|---|---|
-| `‹` (monocromo) | Colapsado — hay iconos ocultos | Expandir |
-| `›` (círculo rojo) | Expandido — se ve el grupo «ocultos» | Colapsar |
-| 👁 (círculo naranja) | Mostrando todo, incluidos los «siempre ocultos» | — |
+| `‹` (monochrome) | Collapsed. The hidden icons do not show | Expand |
+| `›` (red circle) | Expanded. The hidden group shows | Collapse |
+| 👁 (orange circle) | All groups show, also the always-hidden group | Back to expanded |
 
-| Acción | Resultado |
+| Action | Result |
 |---|---|
-| Clic en el chevron | Colapsa / expande el grupo «ocultos» |
-| ⌥ clic | Muestra / esconde también el grupo «siempre ocultos» |
-| Clic derecho | Menú: mostrar todo, activar grupos, auto-ocultar, abrir al iniciar sesión, salir |
-| CLI | `BarManager toggle` / `BarManager reveal` (avisa a la instancia en ejecución) |
+| Click the chevron | Hides or shows the hidden group |
+| Option + click | Shows or hides the always-hidden group |
+| Right click | Opens the menu: show all, group options, auto-hide, open at login, quit |
+| CLI | `BarManager toggle` or `BarManager reveal`. The command goes to the app that operates in the menu bar |
 
-El grupo «siempre ocultos» viene desactivado por defecto; actívalo desde el
-menú (clic derecho) cuando quieras un segundo nivel de ocultamiento.
+The always-hidden group is off by default. Use the right-click menu item
+"Grupo «siempre ocultos»" to set it to on.
 
-### Fondos de grupos
+### Group backgrounds
 
-Al expandir, cada grupo se resalta con una "píldora" de color: azul para el
-grupo «ocultos», gris para los visibles. Se dibujan en una ventana transparente
-colocada un nivel por debajo de los iconos de la barra (nivel 24 vs. 25), y la
-extensión de cada grupo se calcula con `CGWindowListCopyWindowInfo` (solo
-posiciones de ventanas; no requiere permisos). Se puede desactivar desde el
-menú: "Fondos de grupos".
+When you expand the bar, a colored shape shows behind each group. The hidden
+group has a blue background. The visible group has a gray background. A
+transparent window draws the shapes below the status icons (window level 24,
+status icons at level 25). The app reads the icon positions with
+`CGWindowListCopyWindowInfo`. This function does not need permissions. Use the
+menu item "Fondos de grupos" to set the backgrounds to off.
 
-## Compilar y ejecutar
+## Build and run
 
-Prueba rápida (sin bundle):
+For a quick test without an app bundle:
 
 ```sh
 swift run
 ```
 
-App de verdad (`.app` con firma ad-hoc, sin icono en el Dock):
+To build the app bundle (ad-hoc signature, no Dock icon):
 
 ```sh
 ./Scripts/build-app.sh
 open build/BarManager.app
 ```
 
-> "Abrir al iniciar sesión" solo aparece en el menú cuando corre como `.app`.
+> The menu shows "open at login" only when the app operates from an `.app`
+> bundle.
 
-## Publicar en Homebrew
+## Release on Homebrew
 
-1. Generar el artefacto del release (binario universal arm64 + x86_64):
+1. Make the release file (universal binary for arm64 and x86_64):
 
    ```sh
    ./Scripts/release.sh 1.0.0
    ```
 
-   Imprime la ruta del zip y su sha256. Con el repo en GitHub y el workflow de
-   `.github/workflows/release.yml`, esto mismo ocurre solo al pushear un tag
-   `v1.0.0` (crea el release con el zip adjunto).
+   The script shows the zip path and the sha256 value. The workflow
+   `.github/workflows/release.yml` does the same operation when you push a tag
+   `v1.0.0`. The workflow makes the GitHub release and attaches the zip file.
 
-2. Crear el repo del tap: `github.com/cristiandley/homebrew-tap`, copiar
-   `packaging/barmanager.rb` a `Casks/barmanager.rb` y completar el `sha256`.
+2. Copy `packaging/barmanager.rb` to the tap repository
+   `github.com/cristiandley/homebrew-tap` as `Casks/barmanager.rb`. Set the
+   correct `sha256` value.
 
-3. Instalar:
+3. Install:
 
    ```sh
    brew install cristiandley/tap/barmanager
    ```
 
-   Como la firma es ad-hoc (sin notarizar), el cask limpia la cuarentena en un
-   `postflight`; al firmar con Developer ID y notarizar (Apple Developer
-   Program) ese paso se elimina. Notarizar es también requisito práctico para
-   aspirar al repo oficial `homebrew/cask`, que además pide cierta tracción
-   del proyecto (~75 estrellas en GitHub).
+   The app has an ad-hoc signature and is not notarized. Because of this, the
+   cask removes the quarantine attribute in a postflight step. When you sign
+   the app with a Developer ID and notarize it, remove the postflight step.
+   Notarization is also necessary for the official `homebrew/cask` repository.
+   That repository also has a popularity requirement (approximately 75 GitHub
+   stars).
 
-## Cómo funciona
+## How it operates
 
-No hay API pública para ocultar iconos de otras apps. El truco (el mismo de
-Hidden Bar/Ice): cada separador es un `NSStatusItem`; para colapsar su grupo se
-infla su `length` a ~10.000 px, empujando todo lo que esté a su izquierda fuera
-de la pantalla. Expandir es devolverle su ancho normal.
+macOS has no public API that hides the icons of other applications. Each
+separator is an `NSStatusItem`. To collapse a group, the app sets the length
+of the separator to approximately 10000 points. The wide separator pushes all
+icons on its left side off the screen. To expand the group, the app sets the
+length of the separator back to the normal value. Hidden Bar and Ice use the
+same technique.
 
-## Limitaciones conocidas
+## Known limitations
 
-- En Macs con notch, los iconos empujados pueden quedar debajo del notch en vez
-  de fuera de pantalla; macOS ya oculta lo que no cabe, así que en la práctica
-  funciona, pero el espacio útil es menor.
-- La primera vez, macOS coloca los separadores juntos a la izquierda del reloj:
-  acomódalos con ⌘ + arrastrar (la posición se recuerda entre sesiones).
+- On a Mac with a notch, the pushed icons can move below the notch. macOS
+  hides the icons that do not have space. The function operates correctly,
+  but the usable space is smaller.
+- At the first start, macOS puts the separators together on the left side of
+  the clock. Move them with Command + drag. macOS keeps the positions for the
+  next sessions.
