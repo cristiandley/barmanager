@@ -83,13 +83,14 @@ open build/BarManager.app
 3. Instalar:
 
    ```sh
-   brew install --no-quarantine cristiandley/tap/barmanager
+   brew install cristiandley/tap/barmanager
    ```
 
-   `--no-quarantine` hace falta mientras la firma sea ad-hoc; para eliminarlo
-   hay que firmar con Developer ID y notarizar (Apple Developer Program). Eso
-   también es requisito práctico para aspirar al repo oficial `homebrew/cask`,
-   que además pide cierta tracción del proyecto (~75 estrellas en GitHub).
+   Como la firma es ad-hoc (sin notarizar), el cask limpia la cuarentena en un
+   `postflight`; al firmar con Developer ID y notarizar (Apple Developer
+   Program) ese paso se elimina. Notarizar es también requisito práctico para
+   aspirar al repo oficial `homebrew/cask`, que además pide cierta tracción
+   del proyecto (~75 estrellas en GitHub).
 
 ## Cómo funciona
 
