@@ -1,0 +1,20 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build release artifact
+        run: ./Scripts/release.sh "${GITHUB_REF_NAME#v}"
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/BarManager-*.zip
+          generate_release_notes: true
