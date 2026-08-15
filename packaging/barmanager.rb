@@ -6,7 +6,7 @@
 #   brew install --no-quarantine cristiandley/tap/barmanager
 cask "barmanager" do
   version "1.0.0"
-  sha256 "REEMPLAZAR_CON_EL_SHA256_DEL_ZIP"
+  sha256 "6c5d2a2e049fbb257ca4b96399b91ba84347ba089808e9a0e529c89c352c31b0"
 
   url "https://github.com/cristiandley/barmanager/releases/download/v#{version}/BarManager-#{version}.zip"
   name "BarManager"
